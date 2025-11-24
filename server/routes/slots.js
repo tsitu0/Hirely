@@ -3,17 +3,29 @@ const router = express.Router();
 
 // Temp database
 let slots = [
-  { id: 1, time: "10:00 AM", reserved: false, candidateName: null },
-  { id: 2, time: "11:00 AM", reserved: false, candidateName: null },
-  { id: 3, time: "1:00 PM", reserved: true, candidateName: "Tom" }
+  { id: 1, time: "10:00 AM", reserved: false, candidateName: null, checkedIn:false },
+  { id: 2, time: "11:00 AM", reserved: false, candidateName: null, checkedIn:false },
+  { id: 3, time: "1:00 PM", reserved: true, candidateName: "Tom" , checkedIn:false }
 ];
 
-//  http://localhost:5000/api/slots
+//    http://localhost:5000/api/slots
 router.get('/', (req, res) => {
   res.json(slots)
 });
 
-// http://localhost:5000/api/slots/reserve/:id
+//    http://localhost:5000/api/slots/:id
+router.get('/:id', (req, res) => {
+  const slotID = parseInt(req.params.id);
+  const slot = slots.find(s => s.id == slotID);
+
+  if (!slot) {
+    return res.status(404).json({ error: "Slot not found" });
+  }
+
+  res.json(slot);
+});
+
+//    http://localhost:5000/api/slots/reserve/:id
 router.post('/reserve/:id', (req, res) => {
   const slotID = parseInt(req.params.id);
 
@@ -46,7 +58,31 @@ router.post('/reserve/:id', (req, res) => {
 
 });
 
-// http://localhost:5000/api/slots/cancel/:id
+//    http://localhost:5000/api/slots/checkin/:id
+router.post("/checkin/:id", (req, res) => {
+  const slotID = parseInt(req.params.id);
+  const slot = slots.find(s => s.id == slotID);
+
+  if(!slot){
+    return res.status(404).json({ error: "Slot not found" });
+  }
+  if(!slot.reserved){
+    return res.status(400).json({ error: "Cannot check in. Slot is not reserved" });
+  }
+  if(slot.checkedIn){
+    return res.status(400).json({ error: "Candidate already checked in" });
+  }
+
+  slot.checkedIn = true;
+
+  res.json({
+    message: "Candiate checked in successfully",
+    slot
+  });
+
+})
+
+//    http://localhost:5000/api/slots/cancel/:id
 router.post('/cancel/:id', (req, res) => {
   const slotID = parseInt(req.params.id);
   const slot = slots.find(s => s.id == slotID);
@@ -58,6 +94,8 @@ router.post('/cancel/:id', (req, res) => {
   }
   slot.reserved = false;
   slot.candidateName = null;
+  slot.checkedIn = false;
+
   res.json({
     message: "Slot canceled successfully",
     slot
