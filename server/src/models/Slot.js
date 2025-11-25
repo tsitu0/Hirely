@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
-// This mirrors your old JS objects, but in Mongo
 const slotSchema = new mongoose.Schema({
   id: {
     type: Number,
     required: true,
-    unique: true,      // so each slot id is unique
+    unique: true, 
   },
   time: {
     type: String,
