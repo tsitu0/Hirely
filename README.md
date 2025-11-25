@@ -9,13 +9,3 @@ Candidates check in, sit at a monitored workstation, and take their live technic
 This project is the backend foundation for Hirely: handling slots, reservations, check-ins, and interview status using a simple Express-based API (with plans to expand into a complete MERN stack).
 
 Goal: make technical interviews fair, secure, and consistent — without forcing companies to change how they already interview.
-
-Tech Stack
-
-Node.js
-
-Express.js
-
-MongoDB Atlas
-
-Mongoose
