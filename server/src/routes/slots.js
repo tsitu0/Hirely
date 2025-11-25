@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Slot = require('../models/Slot');
 
-// GET /api/slots
+// GET http://localhost:5000/api/slots
 // Return all slots
 router.get('/', async (req, res) => {
   try {
