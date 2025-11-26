@@ -1,11 +1,10 @@
 # Hirely — Secure Technical Interview Platform (Prototype)
+Hirely is a prototype built around a simple idea: technical interviews should be fair, secure, and consistent, but today’s remote interviews make that almost impossible. Cheating is extremely easy through hidden devices, remote helpers, or off-screen tools. Hardware quality is different for every candidate, and a noisy home environment can ruin someone’s performance. Remote interviews are convenient, but they do not create a level playing field.
 
-Hirely is a prototype for a simple idea: technical interviews should be fair, secure, and consistent, but today’s remote setups make that almost impossible. Interviews are easy to cheat on, hardware varies wildly, and the environment affects performance more than people admit.
+Hirely keeps the interview exactly the same but changes where it happens. Instead of interviewing from home, the candidate checks in at a secure, proctored testing center. They sit at a monitored workstation with controlled hardware, stable internet, and a quiet space. The interviewer can stay remote or show up in person, and the interview format stays the same. The only difference is that cheating becomes extremely difficult and every candidate gets the same testing conditions.
 
-Hirely keeps the interview exactly the same, but moves the candidate into a secure, proctored testing center.
+The long term vision is simple. Imagine these testing centers existing across the country and in major tech hubs. Companies could send candidates to the nearest site and run interviews remotely, or they could visit the center in person for on-site rounds. It would work like taking the SAT, but for technical interviews, and it would finally give everyone the same environment.
 
-Candidates check in, sit at a monitored workstation, and take their live technical interview - coding, system design, behavioral — on reliable equipment and in a distraction-free room. The interviewer connects remotely or sits on-site. Nothing about the interview changes except the environment.
+This project is the backend foundation for that idea. I am building the scheduling system using Express.js and MongoDB to handle interview blocks, generated time slots, reservations, check-ins, and live interview status. This backend will later connect to a full MERN platform with proctor tools and monitoring features.
 
-This project is the backend foundation for Hirely: handling slots, reservations, check-ins, and interview status using a simple Express-based API + MongoDB (with plans to expand into a complete MERN stack).
-
-Goal: make technical interviews fair, secure, and consistent — without forcing companies to change how they already interview.
+The goal is clear. Technical interviews should measure skill, not distractions, hardware issues, or cheating. Hirely gives companies a way to keep their existing interview process while making the environment secure, fair, and consistent for every candidate.
