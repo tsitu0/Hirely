@@ -16,7 +16,11 @@ router.get('/', async (req, res) => {
 // GET /api/slots/:id
 // Return a single slot by numeric id
 router.get('/:id', async (req, res) => {
-  const slotID = parseInt(req.params.id);
+  // Guard against non-numeric ids
+  const slotID = parseInt(req.params.id, 10);
+  if (Number.isNaN(slotID)) {
+    return res.status(400).json({ error: 'Invalid slot id' });
+  }
 
   try {
     const slot = await Slot.findOne({ id: slotID });
@@ -35,29 +39,32 @@ router.get('/:id', async (req, res) => {
 // POST /api/slots/reserve/:id
 // Reserve a slot for a candidate
 router.post('/reserve/:id', async (req, res) => {
-  const slotID = parseInt(req.params.id);
+  // Guard against non-numeric ids
+  const slotID = parseInt(req.params.id, 10);
+  if (Number.isNaN(slotID)) {
+    return res.status(400).json({ error: 'Invalid slot id' });
+  }
 
   try {
-    const slot = await Slot.findOne({ id: slotID });
-
-    if (!slot) {
-      return res.status(404).json({ error: 'Slot not found' });
-    }
-    if (slot.reserved) {
-      return res.status(400).json({ error: 'Slot already reserved' });
-    }
-
     const name = req.body.candidateName;
     if (!name) {
       return res.status(400).json({ error: 'Candidate name is required' });
     }
 
-    slot.reserved = true;
-    slot.candidateName = name;
-    slot.checkedIn = false;
+    // Apply update atomically to avoid double booking
+    const slot = await Slot.findOneAndUpdate(
+      { id: slotID, reserved: false },
+      { $set: { reserved: true, candidateName: name, checkedIn: false } },
+      { new: true }
+    );
 
-    //save the changes in mongodb
-    await slot.save();
+    if (!slot) {
+      const exists = await Slot.exists({ id: slotID });
+      if (!exists) {
+        return res.status(404).json({ error: 'Slot not found' });
+      }
+      return res.status(400).json({ error: 'Slot already reserved' });
+    }
 
     res.json({
       message: 'Slot reserved successfully',
@@ -72,23 +79,32 @@ router.post('/reserve/:id', async (req, res) => {
 // POST /api/slots/checkin/:id
 // Mark a reserved slot as checked in
 router.post('/checkin/:id', async (req, res) => {
-  const slotID = parseInt(req.params.id);
+  // Guard against non-numeric ids
+  const slotID = parseInt(req.params.id, 10);
+  if (Number.isNaN(slotID)) {
+    return res.status(400).json({ error: 'Invalid slot id' });
+  }
 
   try {
-    const slot = await Slot.findOne({ id: slotID });
+    // Apply update atomically to avoid double check-ins
+    const slot = await Slot.findOneAndUpdate(
+      { id: slotID, reserved: true, checkedIn: false },
+      { $set: { checkedIn: true } },
+      { new: true }
+    );
 
     if (!slot) {
-      return res.status(404).json({ error: 'Slot not found' });
+      const existing = await Slot.findOne({ id: slotID });
+      if (!existing) {
+        return res.status(404).json({ error: 'Slot not found' });
+      }
+      if (!existing.reserved) {
+        return res.status(400).json({ error: 'Cannot check in. Slot is not reserved' });
+      }
+      if (existing.checkedIn) {
+        return res.status(400).json({ error: 'Candidate already checked in' });
+      }
     }
-    if (!slot.reserved) {
-      return res.status(400).json({ error: 'Cannot check in. Slot is not reserved' });
-    }
-    if (slot.checkedIn) {
-      return res.status(400).json({ error: 'Candidate already checked in' });
-    }
-
-    slot.checkedIn = true;
-    await slot.save();
 
     res.json({
       message: 'Candidate checked in successfully',
@@ -103,24 +119,28 @@ router.post('/checkin/:id', async (req, res) => {
 // POST /api/slots/cancel/:id
 // Cancel a reservation (reset slot)
 router.post('/cancel/:id', async (req, res) => {
-  const slotID = parseInt(req.params.id);
+  // Guard against non-numeric ids
+  const slotID = parseInt(req.params.id, 10);
+  if (Number.isNaN(slotID)) {
+    return res.status(400).json({ error: 'Invalid slot id' });
+  }
 
   try {
-    const slot = await Slot.findOne({ id: slotID });
+    // Apply update atomically to avoid conflicting cancels
+    const slot = await Slot.findOneAndUpdate(
+      { id: slotID, reserved: true },
+      { $set: { reserved: false, candidateName: null, checkedIn: false } },
+      { new: true }
+    );
 
     if (!slot) {
-      return res.status(404).json({ error: 'Slot not found' });
-    }
-    if (!slot.reserved) {
+      const existing = await Slot.findOne({ id: slotID });
+      if (!existing) {
+        return res.status(404).json({ error: 'Slot not found' });
+      }
       return res.status(400).json({ error: 'Slot is already not reserved' });
     }
-
-    slot.reserved = false;
-    slot.candidateName = null;
-    slot.checkedIn = false;
     
-    await slot.save();
-
     res.json({
       message: 'Slot canceled successfully',
       slot,
