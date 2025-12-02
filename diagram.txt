@@ -1,0 +1,36 @@
+Proctoring Center Layout (Text Diagram)
+
+           [Entrance]
+               |
+     +---------+---------+
+     |                   |
+ [Check-In]         [Waiting Area]
+     |                   |
+     |         +---------+---------+
+     |         |                   |
+     v     [Lockers/Storage]  [Restrooms]
+     |
+     v
+[ID Verification Desk]
+     |
+     v
+[Orientation Briefing]
+     |
+     v
++----+-----+----+----+----+
+| Test Room | Cam/AV |    |
+|    A      | Monitor| ...|
+|           | Station|    |
++-----------+---------+----+
+     |
+     v
+[Quiet Exit / Debrief]
+
+Flow Notes:
+- Entrance → Check-In: verify appointment and identity basics; hand out rules sheet.
+- Check-In → Lockers: candidates secure personal items before testing.
+- Lockers → ID Verification Desk: formal ID check, seating assignment, and system setup review.
+- ID Verification Desk → Orientation Briefing: short walk-through of procedures, prohibited behaviors, and restroom policy.
+- Orientation → Test Room: proctor escorts candidate to assigned seat; camera/AV team confirms feed and mic.
+- During exam: Cam/AV monitor station watches feeds; proctor floor walk for disruptions.
+- Post-exam: Quiet exit path to avoid disturbing active testers; optional debrief or incident notes.
