@@ -1,4 +1,4 @@
-# Hirely
+# Hirely — Proctored Technical Interview Scheduling (Prototype)
 Hirely is a prototype backend for running consistent, fair technical interviews. Today’s remote interviews suffer from easy cheating, uneven hardware, and noisy environments; Hirely moves the session to a monitored testing center with standardized equipment and connectivity.
 
 Candidates check in at a proctored workstation, while interviewers can stay remote or attend in person. The interview format stays familiar, but the environment is controlled and cheating becomes far harder.
